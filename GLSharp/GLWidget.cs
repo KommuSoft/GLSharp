@@ -264,7 +264,7 @@ namespace GLSharp {
 			public XVisualClass Class;
 			public long RedMask;
 			public long GreenMask;
-			public long blueMask;
+			public long BlueMask;
 			public int ColormapSize;
 			public int BitsPerRgb;
 
