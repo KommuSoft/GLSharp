@@ -1,21 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// Gtk GLWidget Sharp - Gtk OpenGL Widget for CSharp using OpenTK
-////////////////////////////////////////////////////////////////////////////////
-/*
-Usage:
-	To render either override OnRenderFrame() or hook to the RenderFrame event.
-
-	When GraphicsContext.ShareContexts == True (Default)
-	To setup OpenGL state hook to the following events:
-		GLWidget.GraphicsContextInitialized
-		GLWidget.GraphicsContextShuttingDown
-
-	When GraphicsContext.ShareContexts == False
-	To setup OpenGL state hook to the following events:
-		GLWidget.Initialized
-		GLWidget.ShuttingDown 
-*/
-////////////////////////////////////////////////////////////////////////////////
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Platform;
@@ -28,6 +10,25 @@ using System.ComponentModel;
 using Gtk;
 
 namespace GLSharp {
+	/// <summary>
+	/// GLWidget is a cross-platform GTKSharp widget that supports OpenGL using the OpenTK library inside a GTKSharp application using CSharp.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Usage:
+	/// To render either override <c>OnRenderFrame()</c> or hook to the <c>RenderFrame</c> event.
+	/// </para><para>
+	/// When <c>GraphicsContext.ShareContexts == False</c>, to setup OpenGL state hook to the following events:
+	/// <list type="bullet">
+	/// <item><see cref="GLWidget.GraphicsContextInitialized"/></item>
+	/// <item><see cref="GLWidget.GraphicsContextShuttingDown"/></item>
+	/// </list>
+	/// </para><para>
+	/// When <c>GraphicsContext.ShareContexts == False</c>, to setup OpenGL state hook to the following events:
+	/// <item><see cref="GLWidget.Initialized"/></item>
+	/// <item><see cref="GLWidget.ShuttingDown"/></item>
+	/// </para>
+	/// </remarks>
 	[ToolboxItem (true)]
 	public class GLWidget : DrawingArea, IDisposable {
 		IGraphicsContext graphicsContext;
@@ -64,11 +65,9 @@ namespace GLSharp {
 		public int GlVersionMinor { get; set; }
 
 		public GraphicsContextFlags GraphicsContextFlags {
-			get { return graphicsContextFlags; }
-			set { graphicsContextFlags = value; }
+			get;
+			set;
 		}
-
-		GraphicsContextFlags graphicsContextFlags;
 
 		/// <summary>Constructs a new GLWidget.</summary>
 		public GLWidget () : this (GraphicsMode.Default) {
@@ -181,12 +180,12 @@ namespace GLSharp {
 				// IWindowInfo
 				if (Configuration.RunningOnWindows) {
 					IntPtr windowHandle = gdk_win32_drawable_get_handle (GdkWindow.Handle);
-					windowInfo = OpenTK.Platform.Utilities.CreateWindowsWindowInfo (windowHandle);
+					windowInfo = Utilities.CreateWindowsWindowInfo (windowHandle);
 				} else if (Configuration.RunningOnMacOS) {
 					IntPtr windowHandle = gdk_x11_drawable_get_xid (GdkWindow.Handle);
-					bool ownHandle = true;
-					bool isControl = true;
-					windowInfo = OpenTK.Platform.Utilities.CreateMacOSCarbonWindowInfo (windowHandle, ownHandle, isControl);
+					const bool ownHandle = true;
+					const bool isControl = true;
+					windowInfo = Utilities.CreateMacOSCarbonWindowInfo (windowHandle, ownHandle, isControl);
 				} else if (Configuration.RunningOnX11) {
 					IntPtr display = gdk_x11_display_get_xdisplay (Display.Handle);
 					int screen = Screen.Number;
@@ -203,13 +202,13 @@ namespace GLSharp {
 						visualInfo = GetVisualInfo (display);
 					}
 
-					windowInfo = OpenTK.Platform.Utilities.CreateX11WindowInfo (display, screen, windowHandle, rootWindow, visualInfo);
+					windowInfo = Utilities.CreateX11WindowInfo (display, screen, windowHandle, rootWindow, visualInfo);
 					XFree (visualInfo);
 				} else
 					throw new PlatformNotSupportedException ();
 
 				// GraphicsContext
-				graphicsContext = new GraphicsContext (graphicsMode, windowInfo, GlVersionMajor, GlVersionMinor, graphicsContextFlags);
+				graphicsContext = new GraphicsContext (graphicsMode, windowInfo, GlVersionMajor, GlVersionMinor, GraphicsContextFlags);
 				graphicsContext.MakeCurrent (windowInfo);
 
 				if (GraphicsContext.ShareContexts) {
