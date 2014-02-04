@@ -235,6 +235,12 @@ namespace GLSharp {
 			graphicsContext.SwapBuffers ();
 			return result;
 		}
+
+		protected void SwapBuffers () {
+			if (this.graphicsContext != null) {
+				this.graphicsContext.SwapBuffers ();
+			}
+		}
 		// Called on Resize
 		protected override bool OnConfigureEvent (Gdk.EventConfigure evnt) {
 			bool result = base.OnConfigureEvent (evnt);
